@@ -1,5 +1,4 @@
 # NaI
-
 Notes on NaI simulation:
 
 Sodium iodide detector simulation for Geant4 v 11.1(beta)
@@ -8,20 +7,20 @@ Current build will generate energy spectrum from depositions in scoring volume.
 
 Current build will simulate scintillation photons, but will not score number of hits in sensitive volume.
 
+# Simulation Output
 Simulation output stored in NaIoutput<RunNumber>_t<threadNumber>.root (output file name is hard coded.)
 
 Thread outputs can be merged by typing:
 
-# for merging all threads into a single Root file for one run number:
 hadd nameOfMergedFile.root NaIoutput<RunNumber>_t*.root
 
 for merging all threads into a single Root file for a particular run number
 
-# for merging all threads of all runs into a single Root file:
 hadd nameOfMergedFile.root NaIoutput*_t*.root
 
 for merging all threads of all runs into a single Root file
 
+# Running the simulation
 To run simulations in batch mode, type the following command:
 
 ./NaI macroName.mac
