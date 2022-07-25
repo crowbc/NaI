@@ -1,0 +1,4 @@
+# from tutorial - not for use in NaI
+/detector/nCols {cols}
+/run/reinitializeGeometry
+/run/beamOn 100

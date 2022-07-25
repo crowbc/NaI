@@ -1,0 +1,5 @@
+#initialize multithreading
+/run/numberOfThreads 8
+/run/initialize
+# start batch run of 100M events using default settings
+/run/beamOn 100000000

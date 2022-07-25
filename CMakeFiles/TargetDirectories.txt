@@ -1,0 +1,8 @@
+/home/jack/Documents/geant4/NaI/CMakeFiles/install/strip.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/install/local.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/edit_cache.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/install.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/list_install_components.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/rebuild_cache.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/NaIDetector.dir
+/home/jack/Documents/geant4/NaI/CMakeFiles/NaI.dir
