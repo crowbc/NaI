@@ -62,51 +62,70 @@ void NaIDetectorConstruction::DefineMaterials()
 {
 	G4NistManager *nist = G4NistManager::Instance();
 	
-	size_t nI = 26;
-	G4double energy[nI] = {HCMUM/0.8891, HCMUM/0.8451, HCMUM/0.8033, HCMUM/0.7636, HCMUM/0.7258, HCMUM/0.6899, HCMUM/0.6557, HCMUM/0.6233, HCMUM/0.5924, HCMUM/0.5631, 
+	size_t nI = 71;
+	G4double wlenMUM[nI] = {0.9000, 0.8900, 0.8800, 0.8700, 0.8600, 0.8500, 0.8400, 0.8300, 0.8200, 0.8100,//10
+				0.8000, 0.7900, 0.7800, 0.7700, 0.7600, 0.7500, 0.7400, 0.7300, 0.7200, 0.7100,//20
+				0.7000, 0.6900, 0.6800, 0.6700, 0.6600, 0.6500, 0.6400, 0.6300, 0.6200, 0.6100,//30
+				0.6000, 0.5900, 0.5800, 0.5700, 0.5600, 0.5500, 0.5400, 0.5300, 0.5200, 0.5100,//40
+				0.5000, 0.4900, 0.4800, 0.4700, 0.4600, 0.4500, 0.4400, 0.4300, 0.4200, 0.4100,//50
+				0.4000, 0.3900, 0.3800, 0.3700, 0.3600, 0.3500, 0.3400, 0.3300, 0.3200, 0.3100,//60
+				0.3000, 0.2900, 0.2800, 0.2700, 0.2600, 0.2500, 0.2400, 0.2300, 0.2200, 0.2100,//70
+				0.2000};//71
+	G4double energy[nI]/* = {HCMUM/0.8891, HCMUM/0.8451, HCMUM/0.8033, HCMUM/0.7636, HCMUM/0.7258, HCMUM/0.6899, HCMUM/0.6557, HCMUM/0.6233, HCMUM/0.5924, HCMUM/0.5631, 
 		HCMUM/0.5353, HCMUM/0.5088, HCMUM/0.4836, HCMUM/0.4597, HCMUM/0.4369, HCMUM/0.4153, HCMUM/0.3947, HCMUM/0.3752, HCMUM/0.3566, HCMUM/0.339, 
-		HCMUM/0.3222, HCMUM/0.3063, HCMUM/0.2911, HCMUM/0.2767, HCMUM/0.263, HCMUM/0.250};
-	G4double rindexNaI[nI] = {1.7514793193028, 1.753338714921, 1.7554083069968, 1.7577134899302, 1.7602905913854, 1.7631680461798, 1.7663952687813, 1.7699994775469, 1.7740579536442, 1.7786098175401, 
+		HCMUM/0.3222, HCMUM/0.3063, HCMUM/0.2911, HCMUM/0.2767, HCMUM/0.263, HCMUM/0.250}*/;
+	G4double rindexNaI[nI]/* = {1.7514793193028, 1.753338714921, 1.7554083069968, 1.7577134899302, 1.7602905913854, 1.7631680461798, 1.7663952687813, 1.7699994775469, 1.7740579536442, 1.7786098175401, 
 		1.7837261117122, 1.7895164922257, 1.7960715386354, 1.8034913859982, 1.8119664988198, 1.8216138123297, 1.8327134075919, 1.8454461194368, 1.860241610754, 1.8774002096741, 
-		1.8976189984837, 1.921442035403, 1.9500895751993, 1.984659056014, 2.0271744581354, 2.0803044182369};
-	//G4double rindexAl[26] = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 
-		//1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 
-		//1.5, 1.5, 1.5, 1.5, 1.5, 1.5};
-	G4double rindexWorld[nI] = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
+		1.8976189984837, 1.921442035403, 1.9500895751993, 1.984659056014, 2.0271744581354, 2.0803044182369}*/;
+	/*G4double rindexAl[26] = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 
+		1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 
+		1.5, 1.5, 1.5, 1.5, 1.5, 1.5};*/
+	G4double rindexWorld[nI]/* = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
 		1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1.};
-	G4double absLengthNaI[nI] = {10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
+		1., 1., 1., 1., 1., 1.}*/;
+	G4double absLengthNaI[nI]/* = {10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
 		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
-		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm};// find believable values
-	G4double absLengthAl[nI] = {10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
+		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm}*/;// find believable values
+	G4double absLengthAl[nI]/* = {10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
 		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
-		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm};
-	G4double fcNaI[nI] = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
+		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm}*/;
+	G4double fcNaI[nI]/* = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
 		1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1.};
+		1., 1., 1., 1., 1., 1.}*/;
 	G4double scintYieldNaI = 38./keV;
 	G4double ftcNaI = 250.*ns;
-	G4double reflectivity[nI] = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
+	G4double reflectivity[nI]/* = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
 		1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1.};
-	
+		1., 1., 1., 1., 1., 1.}*/;
+	// for loop for defining material properties
+	for(size_t i = 0; i<nI; i++){
+		energy[i]=HCMUM/wlenMUM[i];
+		rindexNaI[i]=sqrt(1.478+1.532*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-0.170*0.170)+4.27*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-86.21*86.21));
+		absLengthNaI[i]=10.*cm;// search literature. find believable values
+		fcNaI[i]=1.;// search literature. find believable values
+		rindexWorld[i]=1.;
+		absLengthAl[i]=10.*cm;
+		reflectivity[i]=1.;
+	}
+	// define materials starting with air
 	wMat = nist->FindOrBuildMaterial("G4_AIR");
-	
+	// define aluminum from Nist Manager
 	Al = nist->FindOrBuildElement("Al");
 	AlMat = new G4Material("AlMat", rhoAl, 1);
 	AlMat->AddElement(Al, 1);
-	
+	// define NaI from Nist Manager
 	NaI = new G4Material("NaI", rhoNaI, 2);
 	Na = nist->FindOrBuildElement("Na");
 	I = nist->FindOrBuildElement("I");
 	NaI->AddElement(Na, 1);
 	NaI->AddElement(I, 1);
-	
+	// set aluminum properties
 	mptAl = new G4MaterialPropertiesTable();
 	//mptAl->AddProperty("RINDEX", energy, rindexAl, 26);
-	mptAl->AddProperty("ABSLENGTH", energy, absLengthAl, 26);
+	mptAl->AddProperty("ABSLENGTH", energy, absLengthAl, nI);
+	mptAl->AddProperty("REFLECTIVITY", energy, reflectivity, nI);
 	AlMat->SetMaterialPropertiesTable(mptAl);
-	
+	// set NaI properties
 	mptNaI = new G4MaterialPropertiesTable();
 	mptNaI->AddProperty("RINDEX", energy, rindexNaI, nI);
 	mptNaI->AddProperty("ABSLENGTH", energy, absLengthNaI, nI);
@@ -116,19 +135,19 @@ void NaIDetectorConstruction::DefineMaterials()
 	mptNaI->AddConstProperty("FASTTIMECONSTANT", ftcNaI, true);
 	mptNaI->AddConstProperty("YIELDRATIO", 1.0, true);
 	NaI->SetMaterialPropertiesTable(mptNaI);
-	
+	// set air properties
 	mptWorld = new G4MaterialPropertiesTable();
 	mptWorld->AddProperty("RINDEX", energy, rindexWorld, nI);
 	wMat->SetMaterialPropertiesTable(mptWorld);
-	
+	// optical surface properties
 	mirrorSurface = new G4OpticalSurface("mirrorSurface");
 	mirrorSurface->SetType(dielectric_metal);
 	mirrorSurface->SetFinish(ground);
 	mirrorSurface->SetModel(unified);
-	
-	mptMirror = new G4MaterialPropertiesTable();
-	mptMirror->AddProperty("REFLECTIVITY", energy, reflectivity, nI);
-	mirrorSurface->SetMaterialPropertiesTable(mptMirror);
+	// mirror properties (deprecated - use aluminum)
+	//mptMirror = new G4MaterialPropertiesTable();
+	//mptMirror->AddProperty("REFLECTIVITY", energy, reflectivity, nI);
+	mirrorSurface->SetMaterialPropertiesTable(mptAl);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
