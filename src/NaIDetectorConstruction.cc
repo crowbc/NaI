@@ -26,86 +26,97 @@
 //
 /// \file NaIDetectorConstruction.cc
 /// \brief Implementation of the NaIDetectorConstruction class
-
+// included user defined header file
 #include "NaIDetectorConstruction.hh"
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Constructor
 NaIDetectorConstruction::NaIDetectorConstruction()
 {
 	fMessenger = new G4GenericMessenger(this, "/detector/", "Detector Construction");
-	
 	fMessenger->DeclareProperty("xWorld", xWorld, "World volume x-dimension half-length");
 	fMessenger->DeclareProperty("yWorld", yWorld, "World volume y-dimension half-length");
 	fMessenger->DeclareProperty("zWorld", zWorld, "World volume z-dimension half-length");
 	fMessenger->DeclareProperty("isPMT", isPMT, "Toggle sensitive detector geometry for PMT");
-	
+	// set default values
 	xWorld = 0.5*m;
 	yWorld = 0.5*m;
 	zWorld = 0.5*m;
-	
+	// toggle sensitive geometry
 	isPMT = true;// set to false unless scintillation is simulated
-	
+	// Call Material Definintion function in constructor
 	DefineMaterials();
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Destructor
 NaIDetectorConstruction::~NaIDetectorConstruction()
-{
-	
-}
-
+{}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Define detector materials and set properties
 void NaIDetectorConstruction::DefineMaterials()
 {
 	G4NistManager *nist = G4NistManager::Instance();
-	
-	size_t nI = 71;
-	G4double wlenMUM[nI] = {0.9000, 0.8900, 0.8800, 0.8700, 0.8600, 0.8500, 0.8400, 0.8300, 0.8200, 0.8100,//10
-				0.8000, 0.7900, 0.7800, 0.7700, 0.7600, 0.7500, 0.7400, 0.7300, 0.7200, 0.7100,//20
-				0.7000, 0.6900, 0.6800, 0.6700, 0.6600, 0.6500, 0.6400, 0.6300, 0.6200, 0.6100,//30
-				0.6000, 0.5900, 0.5800, 0.5700, 0.5600, 0.5500, 0.5400, 0.5300, 0.5200, 0.5100,//40
-				0.5000, 0.4900, 0.4800, 0.4700, 0.4600, 0.4500, 0.4400, 0.4300, 0.4200, 0.4100,//50
-				0.4000, 0.3900, 0.3800, 0.3700, 0.3600, 0.3500, 0.3400, 0.3300, 0.3200, 0.3100,//60
-				0.3000, 0.2900, 0.2800, 0.2700, 0.2600, 0.2500, 0.2400, 0.2300, 0.2200, 0.2100,//70
-				0.2000};//71
-	G4double energy[nI]/* = {HCMUM/0.8891, HCMUM/0.8451, HCMUM/0.8033, HCMUM/0.7636, HCMUM/0.7258, HCMUM/0.6899, HCMUM/0.6557, HCMUM/0.6233, HCMUM/0.5924, HCMUM/0.5631, 
-		HCMUM/0.5353, HCMUM/0.5088, HCMUM/0.4836, HCMUM/0.4597, HCMUM/0.4369, HCMUM/0.4153, HCMUM/0.3947, HCMUM/0.3752, HCMUM/0.3566, HCMUM/0.339, 
-		HCMUM/0.3222, HCMUM/0.3063, HCMUM/0.2911, HCMUM/0.2767, HCMUM/0.263, HCMUM/0.250}*/;
-	G4double rindexNaI[nI]/* = {1.7514793193028, 1.753338714921, 1.7554083069968, 1.7577134899302, 1.7602905913854, 1.7631680461798, 1.7663952687813, 1.7699994775469, 1.7740579536442, 1.7786098175401, 
-		1.7837261117122, 1.7895164922257, 1.7960715386354, 1.8034913859982, 1.8119664988198, 1.8216138123297, 1.8327134075919, 1.8454461194368, 1.860241610754, 1.8774002096741, 
-		1.8976189984837, 1.921442035403, 1.9500895751993, 1.984659056014, 2.0271744581354, 2.0803044182369}*/;
-	/*G4double rindexAl[26] = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 
-		1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 
-		1.5, 1.5, 1.5, 1.5, 1.5, 1.5};*/
-	G4double rindexWorld[nI]/* = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1.}*/;
-	G4double absLengthNaI[nI]/* = {10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
-		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
-		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm}*/;// find believable values
-	G4double absLengthAl[nI]/* = {10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
-		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 
-		10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm, 10.*cm}*/;
-	G4double fcNaI[nI]/* = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1.}*/;
-	G4double scintYieldNaI = 38./keV;
-	G4double ftcNaI = 250.*ns;
-	G4double reflectivity[nI]/* = {1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 
-		1., 1., 1., 1., 1., 1.}*/;
+	// Declare variables for material properties. Define constants for known quantities
+	size_t nI = 141;
+	G4double wlenMUM[nI];
+	G4double energy[nI];
+	G4double rindexNaI[nI];
+	G4double rindexWorld[nI];
+	G4double absLengthNaI[nI];
+	G4double absLengthAl[nI];
+	G4double fcNaI[nI];
+	G4double reflectivity[nI];
+	// constants for dispersion coefficients and factors
+	const G4double a0NaI = 1.478;
+	const G4double a1NaI = 1.532;
+	const G4double b1NaI = 0.170;
+	const G4double a2NaI = 4.27;
+	const G4double b2NaI = 86.21;
+	/*
+	More data on NaI:
+	source:	IOP Publishing 1221 (2022) 012002
+	DOI:		doi:10.1088/1757-899X/1221/1/012002
+	_____________________________________________________________________________________________________________________________________________________________________________
+	Scintillation crystal	Elemental composition (wt.%)	Light yield (photons/MeV)	Decay time, τ (ns)	Radiation length (cm)	Density (g/cm 3 )	Ref.(s)
+	_____________________________________________________________________________________________________________________________________________________________________________
+	PWO (PbWO4)		45.5%Pb; 40.5%W 14.0% O	250				5-15			0.89			8.28			[7, 14, 15]
+	PbF2			84.5%Pb; 15.5%F		<1000				30, 6			0.93			7.77			[16, 17]
+	CsI			51.1%Cs; 48.8%I		16,800				10			1.86			4.51			[17, 18]
+	LYSO:Ce		57.5%Lu; 3.24%Y		30,000				40			1.14			7.11			[2, 5, 8, 15, 19]
+	(0.05 mol.%)		24.63%Si; 14.6%O
+				0.01% Ce
+	LuAG:Ce		61.6%Lu; 15.8%Al		25,000				820, 50		1.45			6.76			[5, 20]
+	(0.1 mol.%)		22.5%O; 0.02%Ce
+	BaF 2 :Y		76.29%Ba; 21.1%F		2,000				600, 0.5		2.03			4.89			[5, 9]
+	(5 mol.%)		2.6%Y
+	BGO			67.1 %Bi; 17.5%Ge		8200				300			1.12			7.13			[18, 20]
+	(Bi4Ge3O12)		15.4%O
+	NaI:Tl			15.27%Na; 84.31%I		40,000				230			2.59			3.67			[1, 20]
+	(0.3 mol.%)		0.41%Tl
+	_____________________________________________________________________________________________________________________________________________________________________________
+	References:
+			[1] Blasse G, 1994, Scintillator materialsChem. Mater. 6 1465-1475.
+			[20] HuC,LiJ,YangF,JiangB,ZhangL,andZhuR-Y, 2020, LuAG ceramic scintillators for future HEP experiments
+				Nucl. Instrum. Methods Phys. Res. A 954 161723.
+	*/
+	// constants for scintillation properties
+	const G4double scintYieldNaI = 40./keV;// see above table
+	const G4double ftcNaI = 230.*ns;// see above table
 	// for loop for defining material properties
 	for(size_t i = 0; i<nI; i++){
-		energy[i]=HCMUM/wlenMUM[i];
-		rindexNaI[i]=sqrt(1.478+1.532*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-0.170*0.170)+4.27*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-86.21*86.21));
-		absLengthNaI[i]=10.*cm;// search literature. find believable values
-		fcNaI[i]=1.;// search literature. find believable values
-		rindexWorld[i]=1.;
-		absLengthAl[i]=10.*cm;
-		reflectivity[i]=1.;
+		// Set wavlengths from 0.900 micron to 0.200 micron in steps of 0.005micron (when nI = 141)
+		wlenMUM[i] = 0.9000-i*0.0050;
+		energy[i] = HCMUM/wlenMUM[i];
+		/************************************************************************************************************/
+		/* Reference for dispersion formula shown below: https://refractiveindex.info/?shelf=main&book=NaI&page=Li  */
+		/* dispersion formula as function of wavelength: n^2−1=0.478+1.532*λ^2/(λ^2−0.170^2)+4.27*λ^2/(λ^2−86.21^2) */
+		/* See also J. Phys. Chem. Ref. Data 5, 329-528 (1976) at https://aip.scitation.org/doi/10.1063/1.555536    */
+		/************************************************************************************************************/
+		rindexNaI[i] = sqrt(a0NaI+a1NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b1NaI*b1NaI)+a2NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b2NaI*b2NaI));
+		absLengthNaI[i] = 2.59*cm;// see above table
+		fcNaI[i] = 1.;// search literature. find believable values
+		rindexWorld[i] = 1.;
+		absLengthAl[i] = 10.*cm;// search literature. find believable values
+		reflectivity[i] = 1.;// search literature. find believable values
 	}
 	// define materials starting with air
 	wMat = nist->FindOrBuildMaterial("G4_AIR");
@@ -144,14 +155,10 @@ void NaIDetectorConstruction::DefineMaterials()
 	mirrorSurface->SetType(dielectric_metal);
 	mirrorSurface->SetFinish(ground);
 	mirrorSurface->SetModel(unified);
-	// mirror properties (deprecated - use aluminum)
-	//mptMirror = new G4MaterialPropertiesTable();
-	//mptMirror->AddProperty("REFLECTIVITY", energy, reflectivity, nI);
 	mirrorSurface->SetMaterialPropertiesTable(mptAl);
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Construct aluminum housing components
 void NaIDetectorConstruction::ConstructHousing()
 {
 	phi0 = 0.*deg;
@@ -187,9 +194,8 @@ void NaIDetectorConstruction::ConstructHousing()
 	physBarrel = new G4PVPlacement(0, G4ThreeVector(0.,0.,z1), logicBarrel, "physBarrel", logicWorld, false, 0, true);
 	physFlange = new G4PVPlacement(0, G4ThreeVector(0.,0.,z3), logicFlange, "physFlange", logicWorld, false, 0, true);
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Construct scintillator volume
 void NaIDetectorConstruction::ConstructScintillator()
 {
 	phi0 = 0.*deg;
@@ -203,18 +209,15 @@ void NaIDetectorConstruction::ConstructScintillator()
 	// Declare placement variable
 	G4double z2=AlThick+barrelHeight/2+flangeThick/2;
 	G4double zCrys=z2-AlThick;
-	
+	// Define solid, logical and physical volumes
 	crystal = new G4Tubs("crystal", r0, ir1, zCrys, phi0, phi1);
-	
 	logicCrystal = new G4LogicalVolume(crystal, NaI, "logicCrystal");
-	
 	physCrystal = new G4PVPlacement(0, G4ThreeVector(0.,0.,z2), logicCrystal, "physCrystal", logicWorld, false, 0, true);
-	
+	// set scintillator as scoring volume
 	fScoringVolume=logicCrystal;
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Construct sensitive region
 void NaIDetectorConstruction::ConstructSensDet()
 {
 	phi0 = 0.*deg;
@@ -226,40 +229,34 @@ void NaIDetectorConstruction::ConstructSensDet()
 	barrelHeight = 4.75*25.4*mm-AlThick;
 	flangeThick = 0.75*25.4*mm;
 	sensDetHalfThick = 10.00*mm;
-	// Deckare placement variable
+	// Declare placement variable
 	G4double z4=AlThick+barrelHeight+flangeThick+sensDetHalfThick;
-	
+	// Define solid, logical and physical volumes
 	solidDetector = new G4Tubs("solidDetector", r0, ir1, sensDetHalfThick, phi0, phi1);
-	
 	logicDetector = new G4LogicalVolume(solidDetector, wMat, "logicDetector");
-	
 	physDetector = new G4PVPlacement(0, G4ThreeVector(0.,0.,z4), logicDetector, "physDetector", logicWorld, false, 0, true);
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
-
+// Detector Construction Method
 G4VPhysicalVolume* NaIDetectorConstruction::Construct()
 {	
+	// define solid, logical and physical mother volumes
 	wBox = new G4Box("wBox", xWorld, yWorld, zWorld);
-	
 	logicWorld =  new G4LogicalVolume(wBox, wMat, "logicWorld");
-	
 	physWorld = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), logicWorld, "physWorld", 0, false, 0, true);
-	
+	// Construct daughter volumes
 	ConstructHousing();
-	
 	ConstructScintillator();
-	
+	// construct sensitive volume if toggled on
 	if(isPMT)
 	{
 		ConstructSensDet();
 	}
-	
+	// return value
 	return physWorld;
 }
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
+// Method for constructing and specifying sensitive detector
 void NaIDetectorConstruction::ConstructSDandField()
 {
 	NaISensitiveDetector *sensDet = new NaISensitiveDetector("PMT");

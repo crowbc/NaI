@@ -26,10 +26,10 @@
 //
 /// \file NaIDetectorConstruction.hh
 /// \brief Definition of the NaIDetectorConstruction class
-
+// start conditional to define class only once
 #ifndef NAIDETECTORCONSTRUCTION_HH
 #define NAIDETECTORCONSTRUCTION_HH
-
+// included Geant4 header files
 #include "G4VUserDetectorConstruction.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4LogicalVolume.hh"
@@ -46,9 +46,9 @@
 #include "G4GenericMessenger.hh"
 #include "G4OpticalSurface.hh"
 #include "G4LogicalSkinSurface.hh"
-
+// included user defined header file
 #include "NaIDetector.hh"
-
+// create the class
 class NaIDetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
@@ -60,42 +60,40 @@ public:
 	virtual G4VPhysicalVolume* Construct();
 	
 private:
+	// Declare solid, logical and physical volumes used in NaIDetectorConstruction.cc
 	G4Box *wBox;
 	G4Tubs *solidDetector, *bottom, *barrel, *flange, *crystal;
 	G4LogicalVolume *logicWorld, *logicDetector, *logicBottom, *logicBarrel, *logicFlange, *logicCrystal;
 	G4VPhysicalVolume *physWorld, *physDetector, *physBottom, *physBarrel, *physFlange, *physCrystal;
-	
+	// Declare optical surfaces
 	G4OpticalSurface *mirrorSurface;
 	G4LogicalSkinSurface *skinBarrel, *skinBottom;
-	
+	// Declare materials and properties tables
 	G4Material *wMat, *AlMat, *NaI;
 	G4Element *Al, *Na, *I;
 	G4MaterialPropertiesTable *mptAl, *mptNaI, *mptWorld, *mptMirror;
-	
-	G4int nCols, nRows;
-	
+	// Declare variables used in constructor and in defining volumes	
 	G4double xWorld, yWorld, zWorld, phi0, phi1, r0, r1, ir1, AlThick, barrelHeight, flangeThick, rOuter, sensDetHalfThick;
-	
+	G4bool isPMT;
+	// physical constants
 	const G4double HCMUM = 1.239841939*eV;
-	const G4double HCNM = 1.239841939*keV;
+	const G4double HCNM = 1239.841939*eV;
+	// specified densities
 	const G4double rhoAl = 2.710*g/cm3;
 	//const G4double aAl=26.9815*g/mole;
 	//const G4double macAl=0.02232*cm2/g;
 	const G4double rhoNaI = 3.67*g/cm3;
 	//const G4double mmNaI=149.89*g/mole;
-	
-	G4bool isPMT;
-	
+	// Declare Messenger for setting parameters	
 	G4GenericMessenger *fMessenger;
-	
+	// Declare scoring volume
 	G4LogicalVolume *fScoringVolume;
-	
+	// declare functions
 	void DefineMaterials();
 	void ConstructHousing();
 	void ConstructScintillator();
 	void ConstructSensDet();
-	
 	virtual void ConstructSDandField();
 };
-
+// end of conditional to ensure class is defined only once
 #endif
