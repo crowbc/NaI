@@ -69,7 +69,7 @@ private:
 	G4OpticalSurface *mirrorSurface;
 	G4LogicalSkinSurface *skinBarrel, *skinBottom;
 	// Declare materials and properties tables
-	G4Material *wMat, *AlMat, *NaI;
+	G4Material *wMat, *aluminium, *NaI;
 	G4Element *Al, *Na, *I;
 	G4MaterialPropertiesTable *mptAl, *mptNaI, *mptWorld, *mptMirror;
 	// Declare variables used in constructor and in defining volumes	

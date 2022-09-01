@@ -42,7 +42,7 @@ NaIDetectorConstruction::NaIDetectorConstruction()
 	yWorld = 0.5*m;
 	zWorld = 0.5*m;
 	// toggle sensitive geometry
-	isPMT = true;// set to false unless scintillation is simulated
+	isPMT = true;
 	// Call Material Definintion function in constructor
 	DefineMaterials();
 }
@@ -65,6 +65,10 @@ void NaIDetectorConstruction::DefineMaterials()
 	G4double absLengthAl[nI];
 	G4double fcNaI[nI];
 	G4double reflectivity[nI];
+	// constants for wavelength calculations (wavelengths given in microns)
+	const G4double wlenMax = 0.9000;
+	const G4double wlenMin = 0.2000;
+	const G4double wlenDelta = (wlenMax-wlenMin)/(nI-1);
 	// constants for dispersion coefficients and factors
 	const G4double a0NaI = 1.478;
 	const G4double a1NaI = 1.532;
@@ -104,7 +108,7 @@ void NaIDetectorConstruction::DefineMaterials()
 	// for loop for defining material properties
 	for(size_t i = 0; i<nI; i++){
 		// Set wavlengths from 0.900 micron to 0.200 micron in steps of 0.005micron (when nI = 141)
-		wlenMUM[i] = 0.9000-i*0.0050;
+		wlenMUM[i] = wlenMax-i*wlenDelta;
 		energy[i] = HCMUM/wlenMUM[i];
 		/************************************************************************************************************/
 		/* Reference for dispersion formula shown below: https://refractiveindex.info/?shelf=main&book=NaI&page=Li  */
@@ -115,16 +119,18 @@ void NaIDetectorConstruction::DefineMaterials()
 		absLengthNaI[i] = 2.59*cm;// see above table
 		fcNaI[i] = 1.;// search literature. find believable values
 		rindexWorld[i] = 1.;
-		absLengthAl[i] = 10.*cm;// search literature. find believable values
+		//absLengthAl[i] = 10.*cm;// search literature. find believable values
 		reflectivity[i] = 1.;// search literature. find believable values
+		// Debug message - disable to reduce run time
+		//G4cout << "wavelength (microns:) " << wlenMUM[i] << "; energy (eV:) " << energy[i]*1E06 << "; refractive index: " << rindexNaI[i] << G4endl;
 	}
 	// define materials starting with air
 	wMat = nist->FindOrBuildMaterial("G4_AIR");
-	// define aluminum from Nist Manager
+	// to do: define aluminum from Nist Manager
 	Al = nist->FindOrBuildElement("Al");
-	AlMat = new G4Material("AlMat", rhoAl, 1);
-	AlMat->AddElement(Al, 1);
-	// define NaI from Nist Manager
+	aluminium = new G4Material("aluminium", rhoAl, 1);
+	aluminium->AddElement(Al, 1);
+	// to do: define NaI from Nist Manager
 	NaI = new G4Material("NaI", rhoNaI, 2);
 	Na = nist->FindOrBuildElement("Na");
 	I = nist->FindOrBuildElement("I");
@@ -132,10 +138,9 @@ void NaIDetectorConstruction::DefineMaterials()
 	NaI->AddElement(I, 1);
 	// set aluminum properties
 	mptAl = new G4MaterialPropertiesTable();
-	//mptAl->AddProperty("RINDEX", energy, rindexAl, 26);
-	mptAl->AddProperty("ABSLENGTH", energy, absLengthAl, nI);
+	//mptAl->AddProperty("ABSLENGTH", energy, absLengthAl, nI);
 	mptAl->AddProperty("REFLECTIVITY", energy, reflectivity, nI);
-	AlMat->SetMaterialPropertiesTable(mptAl);
+	aluminium->SetMaterialPropertiesTable(mptAl);
 	// set NaI properties
 	mptNaI = new G4MaterialPropertiesTable();
 	mptNaI->AddProperty("RINDEX", energy, rindexNaI, nI);
@@ -175,20 +180,17 @@ void NaIDetectorConstruction::ConstructHousing()
 	G4double z0=AlThick/2;
 	G4double z1=AlThick+barrelHeight/2;
 	G4double z3=AlThick+barrelHeight+flangeThick/2;
-	
 	// define shapes for detector housing and PMT sensitive region
 	bottom = new G4Tubs("bottom", r0, r1, AlThick/2, phi0, phi1);
 	barrel = new G4Tubs("barrel", ir1, r1, barrelHeight/2, phi0, phi1);
 	flange = new G4Tubs("flange", ir1, rOuter, flangeThick/2, phi0, phi1);
-	
 	// logical volumes for housing components
-	logicBottom = new G4LogicalVolume(bottom, AlMat, "logicBottom");
-	logicBarrel = new G4LogicalVolume(barrel, AlMat, "logicBarrel");
-	logicFlange = new G4LogicalVolume(flange, AlMat, "logicFlange");
-	
+	logicBottom = new G4LogicalVolume(bottom, aluminium, "logicBottom");
+	logicBarrel = new G4LogicalVolume(barrel, aluminium, "logicBarrel");
+	logicFlange = new G4LogicalVolume(flange, aluminium, "logicFlange");
+	// define logical surfaces
 	skinBottom = new G4LogicalSkinSurface("skinBottom", logicBottom, mirrorSurface);
 	skinBarrel = new G4LogicalSkinSurface("skinBarrel", logicBarrel, mirrorSurface);
-	
 	// physical volumes for detector components
 	physBottom = new G4PVPlacement(0, G4ThreeVector(0.,0.,z0), logicBottom, "physBottom", logicWorld, false, 0, true);
 	physBarrel = new G4PVPlacement(0, G4ThreeVector(0.,0.,z1), logicBarrel, "physBarrel", logicWorld, false, 0, true);
