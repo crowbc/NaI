@@ -63,7 +63,7 @@ void NaIDetectorConstruction::DefineMaterials()
 	G4double rindexWorld[nI];
 	G4double absLengthNaI[nI];
 	G4double absLengthAl[nI];
-	G4double fcNaI[nI];
+	G4double scNaI[nI];
 	G4double reflectivity[nI];
 	// constants for wavelength calculations (wavelengths given in microns)
 	const G4double wlenMax = 0.9000;
@@ -104,7 +104,7 @@ void NaIDetectorConstruction::DefineMaterials()
 	*/
 	// constants for scintillation properties
 	const G4double scintYieldNaI = 40./keV;// see above table
-	const G4double ftcNaI = 230.*ns;// see above table
+	const G4double stcNaI = 230.*ns;// see above table
 	// for loop for defining material properties
 	for(size_t i = 0; i<nI; i++){
 		// Set wavlengths from 0.900 micron to 0.200 micron in steps of 0.005micron (when nI = 141)
@@ -117,7 +117,7 @@ void NaIDetectorConstruction::DefineMaterials()
 		/************************************************************************************************************/
 		rindexNaI[i] = sqrt(a0NaI+a1NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b1NaI*b1NaI)+a2NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b2NaI*b2NaI));
 		absLengthNaI[i] = 2.59*cm;// see above table
-		fcNaI[i] = 1.;// search literature. find believable values
+		scNaI[i] = 1.;// search literature. find believable values
 		rindexWorld[i] = 1.;
 		//absLengthAl[i] = 10.*cm;// search literature. find believable values
 		reflectivity[i] = 1.;// search literature. find believable values
@@ -145,11 +145,11 @@ void NaIDetectorConstruction::DefineMaterials()
 	mptNaI = new G4MaterialPropertiesTable();
 	mptNaI->AddProperty("RINDEX", energy, rindexNaI, nI);
 	mptNaI->AddProperty("ABSLENGTH", energy, absLengthNaI, nI);
-	mptNaI->AddProperty("FASTCOMPONENT", energy, fcNaI, nI, true);
+	mptNaI->AddProperty("SCINTILLATIONCOMPONENT1", energy, scNaI, nI);
 	mptNaI->AddConstProperty("SCINTILLATIONYIELD", scintYieldNaI);
-	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0, true);
-	mptNaI->AddConstProperty("FASTTIMECONSTANT", ftcNaI, true);
-	mptNaI->AddConstProperty("YIELDRATIO", 1.0, true);
+	mptNaI->AddConstProperty("RESOLUTIONSCALE", 1.0);
+	mptNaI->AddConstProperty("SCINTILLATIONTIMECONSTANT1", stcNaI);
+	mptNaI->AddConstProperty("SCINTILLATIONYIELD1", 1.0);
 	NaI->SetMaterialPropertiesTable(mptNaI);
 	// set air properties
 	mptWorld = new G4MaterialPropertiesTable();
