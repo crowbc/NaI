@@ -1,1 +1,4 @@
 tutorial/
+*.png
+*.root
+outputData/**
