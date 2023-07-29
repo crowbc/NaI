@@ -28,7 +28,6 @@
 /// \brief Implementation of the NaIDetectorConstruction class
 // included user defined header file
 #include "NaIDetectorConstruction.hh"
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Constructor
 NaIDetectorConstruction::NaIDetectorConstruction()
 {
@@ -42,15 +41,13 @@ NaIDetectorConstruction::NaIDetectorConstruction()
 	yWorld = 0.5*m;
 	zWorld = 0.5*m;
 	// toggle sensitive geometry
-	isPMT = true;
+	isPMT = false;
 	// Call Material Definintion function in constructor
 	DefineMaterials();
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Destructor
 NaIDetectorConstruction::~NaIDetectorConstruction()
 {}
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Define detector materials and set properties
 void NaIDetectorConstruction::DefineMaterials()
 {
@@ -82,13 +79,13 @@ void NaIDetectorConstruction::DefineMaterials()
 	_____________________________________________________________________________________________________________________________________________________________________________
 	Scintillation crystal	Elemental composition (wt.%)	Light yield (photons/MeV)	Decay time, τ (ns)	Radiation length (cm)	Density (g/cm 3 )	Ref.(s)
 	_____________________________________________________________________________________________________________________________________________________________________________
-	PWO (PbWO4)		45.5%Pb; 40.5%W 14.0% O	250				5-15			0.89			8.28			[7, 14, 15]
-	PbF2			84.5%Pb; 15.5%F		<1000				30, 6			0.93			7.77			[16, 17]
-	CsI			51.1%Cs; 48.8%I		16,800				10			1.86			4.51			[17, 18]
-	LYSO:Ce		57.5%Lu; 3.24%Y		30,000				40			1.14			7.11			[2, 5, 8, 15, 19]
+	PWO (PbWO4)		45.5%Pb; 40.5%W 14.0% O		250				5-15			0.89			8.28			[7, 14, 15]
+	PbF2			84.5%Pb; 15.5%F			<1000				30, 6			0.93			7.77			[16, 17]
+	CsI			51.1%Cs; 48.8%I			16,800				10			1.86			4.51			[17, 18]
+	LYSO:Ce			57.5%Lu; 3.24%Y			30,000				40			1.14			7.11			[2, 5, 8, 15, 19]
 	(0.05 mol.%)		24.63%Si; 14.6%O
 				0.01% Ce
-	LuAG:Ce		61.6%Lu; 15.8%Al		25,000				820, 50		1.45			6.76			[5, 20]
+	LuAG:Ce			61.6%Lu; 15.8%Al		25,000				820, 50			1.45			6.76			[5, 20]
 	(0.1 mol.%)		22.5%O; 0.02%Ce
 	BaF 2 :Y		76.29%Ba; 21.1%F		2,000				600, 0.5		2.03			4.89			[5, 9]
 	(5 mol.%)		2.6%Y
@@ -101,10 +98,32 @@ void NaIDetectorConstruction::DefineMaterials()
 			[1] Blasse G, 1994, Scintillator materialsChem. Mater. 6 1465-1475.
 			[20] HuC,LiJ,YangF,JiangB,ZhangL,andZhuR-Y, 2020, LuAG ceramic scintillators for future HEP experiments
 				Nucl. Instrum. Methods Phys. Res. A 954 161723.
+	Table of Scintillator Properties in Hamamatsu catalog:
+	_______________________________________________________________________________________________________________________________________________________________________________
+	Table 1: Summary of scintillator characteristics
+	_______________________________________________________________________________________________________________________________________________________________________________
+				NaI(Tl)		BGO		CsI(Tl)		Pure CsI	BaF2		GSO: Ce		Plastic		LaBr3: Ce	LSO: Ce		YAP: Ce
+	Density (g/cm3)		3.67		7.13		4.51		4.51		4.88		6.71		1.03		5.29		7.35		5.55
+	L_rad (cm)		2.59		1.12		1.85		1.85		2.10		1.38		40		2.1		0.88		2.70
+	Refractive index	1.85		2.15		1.80		1.80		1.58		1.85		1.58		1.9		1.82		1.97
+	Hygroscopic		Yes		No		Slightly	Slightly	Slightly	No		No		Yes		No		No
+	Luminescence (nm)	410		480		530		310		220 / 325	430		400		380		420		380
+	Decay time (ns)		230		300		1000		10		0.9 / 630	30		2.0		16		40		30
+	Relative light output	100		15		45 to 50	<10		20		20		25		165		70		40
+	_______________________________________________________________________________________________________________________________________________________________________________
+	
+	Note from catalog: Spectral response range of most 2" phototubes is 300 to 650 nm. Two types, the R6041-406 and -506 have spectral ranges of 160 to 650 nm. (see table starting p. 22)
+	Hamamatsu catalog p. 73 shows peak around 410-420 nm, dropping to 0 around 310 nm and 510 nm (maybe Gaussian?, mean ~410nm, FWHM ~110nm). There is a similar graph and table on p. 15
+	of the same catalog. The formula from this information is contained in note (1) below:
+	(3) test function for scNaI[i]: scNaI[i] = exp(-2*(wlenNM[i]-410.0)*(wlenNM[i]-410.0)/(110.0*110.0));
+	
 	*/
 	// constants for scintillation properties
-	const G4double scintYieldNaI = 40./keV;// see above table
+	const G4double scintYieldNaI = 40000./MeV;// see above table
 	const G4double stcNaI = 230.*ns;// see above table
+	// From Hamamatsu Catalog (values in microns:)
+	const G4double meanWlenNaI = 0.410;
+	const G4double FWHMNaI = 0.110;
 	// for loop for defining material properties
 	for(size_t i = 0; i<nI; i++){
 		// Set wavlengths from 0.900 micron to 0.200 micron in steps of 0.005micron (when nI = 141)
@@ -117,7 +136,7 @@ void NaIDetectorConstruction::DefineMaterials()
 		/************************************************************************************************************/
 		rindexNaI[i] = sqrt(a0NaI+a1NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b1NaI*b1NaI)+a2NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b2NaI*b2NaI));
 		absLengthNaI[i] = 2.59*cm;// see above table
-		scNaI[i] = 1.;// search literature. find believable values
+		scNaI[i] = exp(-2*(wlenMUM[i]-meanWlenNaI)*(wlenMUM[i]-meanWlenNaI)/(FWHMNaI*FWHMNaI));
 		rindexWorld[i] = 1.;
 		//absLengthAl[i] = 10.*cm;// search literature. find believable values
 		reflectivity[i] = 1.;// search literature. find believable values
@@ -162,18 +181,17 @@ void NaIDetectorConstruction::DefineMaterials()
 	mirrorSurface->SetModel(unified);
 	mirrorSurface->SetMaterialPropertiesTable(mptAl);
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Construct aluminum housing components
 void NaIDetectorConstruction::ConstructHousing()
 {
 	phi0 = 0.*deg;
 	phi1 = 360.*deg;
 	r0 = 0.*mm;
-	r1 = (5.25*25.4/2)*mm;
-	ir1=2.5*25.4*mm;
+	r1 = 5.25*in/2;
+	ir1 = 2.5*in;
 	AlThick = r1-ir1;
-	barrelHeight = 4.75*25.4*mm-AlThick;
-	flangeThick = 0.75*25.4*mm;
+	barrelHeight = 4.75*in-AlThick;
+	flangeThick = 0.75*in;
 	rOuter = r1+16.5*mm;
 	sensDetHalfThick = 10.00*mm;
 	// Declare placement variables
@@ -196,18 +214,17 @@ void NaIDetectorConstruction::ConstructHousing()
 	physBarrel = new G4PVPlacement(0, G4ThreeVector(0.,0.,z1), logicBarrel, "physBarrel", logicWorld, false, 0, true);
 	physFlange = new G4PVPlacement(0, G4ThreeVector(0.,0.,z3), logicFlange, "physFlange", logicWorld, false, 0, true);
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Construct scintillator volume
 void NaIDetectorConstruction::ConstructScintillator()
 {
 	phi0 = 0.*deg;
 	phi1 = 360.*deg;
 	r0 = 0.*mm;
-	r1 = (5.25*25.4/2)*mm;
-	ir1=2.5*25.4*mm;
+	r1 = 5.25*in/2;
+	ir1 = 2.5*in;
 	AlThick = r1-ir1;
-	barrelHeight = 4.75*25.4*mm-AlThick;
-	flangeThick = 0.75*25.4*mm;
+	barrelHeight = 4.75*in-AlThick;
+	flangeThick = 0.75*in;
 	// Declare placement variable
 	G4double z2=AlThick+barrelHeight/2+flangeThick/2;
 	G4double zCrys=z2-AlThick;
@@ -218,18 +235,17 @@ void NaIDetectorConstruction::ConstructScintillator()
 	// set scintillator as scoring volume
 	fScoringVolume=logicCrystal;
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Construct sensitive region
 void NaIDetectorConstruction::ConstructSensDet()
 {
 	phi0 = 0.*deg;
 	phi1 = 360.*deg;
 	r0 = 0.*mm;
-	r1 = (5.25*25.4/2)*mm;
-	ir1=2.5*25.4*mm;
+	r1 = 5.25*in/2;
+	ir1 = 2.5*in;
 	AlThick = r1-ir1;
-	barrelHeight = 4.75*25.4*mm-AlThick;
-	flangeThick = 0.75*25.4*mm;
+	barrelHeight = 4.75*in-AlThick;
+	flangeThick = 0.75*in;
 	sensDetHalfThick = 10.00*mm;
 	// Declare placement variable
 	G4double z4=AlThick+barrelHeight+flangeThick+sensDetHalfThick;
@@ -238,7 +254,6 @@ void NaIDetectorConstruction::ConstructSensDet()
 	logicDetector = new G4LogicalVolume(solidDetector, wMat, "logicDetector");
 	physDetector = new G4PVPlacement(0, G4ThreeVector(0.,0.,z4), logicDetector, "physDetector", logicWorld, false, 0, true);
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 // Detector Construction Method
 G4VPhysicalVolume* NaIDetectorConstruction::Construct()
 {	
@@ -257,7 +272,6 @@ G4VPhysicalVolume* NaIDetectorConstruction::Construct()
 	// return value
 	return physWorld;
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Method for constructing and specifying sensitive detector
 void NaIDetectorConstruction::ConstructSDandField()
 {

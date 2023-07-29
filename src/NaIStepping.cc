@@ -20,7 +20,11 @@ void NaISteppingAction::UserSteppingAction(const G4Step *step)
 	{
 		return;
 	}
-	
-	G4double edep = step->GetTotalEnergyDeposit();
+	G4double edep = 0;
+	G4String pName = step->GetTrack()->GetDefinition()->GetParticleName();
+	if(pName == "gamma"){
+		// only count gamma energy
+		edep = step->GetTotalEnergyDeposit();
+	}
 	fEventAction->AddEdep(edep);
 }

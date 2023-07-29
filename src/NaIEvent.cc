@@ -8,12 +8,12 @@ NaIEventAction::NaIEventAction(NaIRunAction*)
 NaIEventAction::~NaIEventAction()
 {}
 
-void NaIEventAction::BeginOfEventAction(const G4Event*)
+void NaIEventAction::BeginOfEventAction(const G4Event* anEvent)
 {
 	fEdep = 0.;
 }
 
-void NaIEventAction::EndOfEventAction(const G4Event*)
+void NaIEventAction::EndOfEventAction(const G4Event* anEvent)
 {
 	//G4cout << "Energy deposition: " << fEdep << " MeV" << G4endl;
 	

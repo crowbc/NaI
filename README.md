@@ -1,7 +1,7 @@
 # NaI
 Notes on NaI simulation:
 
-Sodium iodide detector simulation for Geant4 v 11.1(beta)
+Sodium iodide detector simulation for Geant4 v 11.1.0
 
 Current build will generate energy spectrum from depositions in scoring volume.
 

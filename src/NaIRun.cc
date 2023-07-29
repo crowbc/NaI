@@ -4,16 +4,22 @@ NaIRunAction::NaIRunAction()
 {
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
 	
-	man->CreateNtuple("Photon", "Photon");
-	man->CreateNtupleIColumn("fEvent");
-	man->CreateNtupleDColumn("fX");
-	man->CreateNtupleDColumn("fY");
-	man->CreateNtupleDColumn("fZ");
-	man->CreateNtupleDColumn("fWlen");
+	man->CreateNtuple("MCTruth", "MCTruth");
+	man->CreateNtupleIColumn("fEvent");// col 0
+	man->CreateNtupleDColumn("fX");// col 1
+	man->CreateNtupleDColumn("fY");// col 2
+	man->CreateNtupleDColumn("fZ");// col 3
+	man->CreateNtupleDColumn("fT");// col 4
+	man->CreateNtupleDColumn("fWlen");// col 5
+	man->CreateNtupleDColumn("fPX0");// col 6
+	man->CreateNtupleDColumn("fPY0");// col 7
+	man->CreateNtupleDColumn("fPZ0");// col 8
+	//man->CreateNtupleDColumn("fEdep");
 	man->FinishNtuple(0);
 	
 	man->CreateNtuple("Hits", "Hits");
 	man->CreateNtupleIColumn("fEvent");
+	//man->CreateNtupleIColumn("peHits");
 	man->FinishNtuple(1);
 	
 	man->CreateNtuple("Scoring", "Scoring");

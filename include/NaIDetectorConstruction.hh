@@ -75,6 +75,8 @@ private:
 	// Declare variables used in constructor and in defining volumes	
 	G4double xWorld, yWorld, zWorld, phi0, phi1, r0, r1, ir1, AlThick, barrelHeight, flangeThick, rOuter, sensDetHalfThick;
 	G4bool isPMT;
+	// conversion factor
+	const G4double in = 25.4*mm;
 	// physical constants
 	const G4double HCMUM = 1.239841939*eV;
 	const G4double HCNM = 1239.841939*eV;
