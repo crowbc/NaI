@@ -1,4 +1,0 @@
-# initialize visualizer
-/control/execute init_vis.mac
-# start batch run of 10k events using default settings
-/run/beamOn 10000
