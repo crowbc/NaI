@@ -41,7 +41,7 @@ NaIDetectorConstruction::NaIDetectorConstruction()
 	yWorld = 0.5*m;
 	zWorld = 0.5*m;
 	// toggle sensitive geometry
-	isPMT = false;
+	isPMT = true;
 	// Call Material Definintion function in constructor
 	DefineMaterials();
 }
@@ -52,104 +52,36 @@ NaIDetectorConstruction::~NaIDetectorConstruction()
 void NaIDetectorConstruction::DefineMaterials()
 {
 	G4NistManager *nist = G4NistManager::Instance();
-	// Declare variables for material properties. Define constants for known quantities
+	// Declare variables for material properties. Define constant for derived quantity
 	size_t nI = 141;
 	G4double wlenMUM[nI];
 	G4double energy[nI];
 	G4double rindexNaI[nI];
-	G4double rindexWorld[nI];
+	G4double rindexAir[nI];
 	G4double absLengthNaI[nI];
 	G4double absLengthAl[nI];
 	G4double scNaI[nI];
-	G4double reflectivity[nI];
-	// constants for wavelength calculations (wavelengths given in microns)
-	const G4double wlenMax = 0.9000;
-	const G4double wlenMin = 0.2000;
+	G4double reflAl[nI];
+	// wavelength increment size in microns
 	const G4double wlenDelta = (wlenMax-wlenMin)/(nI-1);
-	// constants for dispersion coefficients and factors
-	const G4double a0NaI = 1.478;
-	const G4double a1NaI = 1.532;
-	const G4double b1NaI = 0.170;
-	const G4double a2NaI = 4.27;
-	const G4double b2NaI = 86.21;
-	/*
-	More data on NaI:
-	source:	IOP Publishing 1221 (2022) 012002
-	DOI:		doi:10.1088/1757-899X/1221/1/012002
-	_____________________________________________________________________________________________________________________________________________________________________________
-	Scintillation crystal	Elemental composition (wt.%)	Light yield (photons/MeV)	Decay time, τ (ns)	Radiation length (cm)	Density (g/cm 3 )	Ref.(s)
-	_____________________________________________________________________________________________________________________________________________________________________________
-	PWO (PbWO4)		45.5%Pb; 40.5%W 14.0% O		250				5-15			0.89			8.28			[7, 14, 15]
-	PbF2			84.5%Pb; 15.5%F			<1000				30, 6			0.93			7.77			[16, 17]
-	CsI			51.1%Cs; 48.8%I			16,800				10			1.86			4.51			[17, 18]
-	LYSO:Ce			57.5%Lu; 3.24%Y			30,000				40			1.14			7.11			[2, 5, 8, 15, 19]
-	(0.05 mol.%)		24.63%Si; 14.6%O
-				0.01% Ce
-	LuAG:Ce			61.6%Lu; 15.8%Al		25,000				820, 50			1.45			6.76			[5, 20]
-	(0.1 mol.%)		22.5%O; 0.02%Ce
-	BaF 2 :Y		76.29%Ba; 21.1%F		2,000				600, 0.5		2.03			4.89			[5, 9]
-	(5 mol.%)		2.6%Y
-	BGO			67.1 %Bi; 17.5%Ge		8200				300			1.12			7.13			[18, 20]
-	(Bi4Ge3O12)		15.4%O
-	NaI:Tl			15.27%Na; 84.31%I		40,000				230			2.59			3.67			[1, 20]
-	(0.3 mol.%)		0.41%Tl
-	_____________________________________________________________________________________________________________________________________________________________________________
-	References:
-			[1] Blasse G, 1994, Scintillator materialsChem. Mater. 6 1465-1475.
-			[20] HuC,LiJ,YangF,JiangB,ZhangL,andZhuR-Y, 2020, LuAG ceramic scintillators for future HEP experiments
-				Nucl. Instrum. Methods Phys. Res. A 954 161723.
-	Table of Scintillator Properties in Hamamatsu catalog:
-	_______________________________________________________________________________________________________________________________________________________________________________
-	Table 1: Summary of scintillator characteristics
-	_______________________________________________________________________________________________________________________________________________________________________________
-				NaI(Tl)		BGO		CsI(Tl)		Pure CsI	BaF2		GSO: Ce		Plastic		LaBr3: Ce	LSO: Ce		YAP: Ce
-	Density (g/cm3)		3.67		7.13		4.51		4.51		4.88		6.71		1.03		5.29		7.35		5.55
-	L_rad (cm)		2.59		1.12		1.85		1.85		2.10		1.38		40		2.1		0.88		2.70
-	Refractive index	1.85		2.15		1.80		1.80		1.58		1.85		1.58		1.9		1.82		1.97
-	Hygroscopic		Yes		No		Slightly	Slightly	Slightly	No		No		Yes		No		No
-	Luminescence (nm)	410		480		530		310		220 / 325	430		400		380		420		380
-	Decay time (ns)		230		300		1000		10		0.9 / 630	30		2.0		16		40		30
-	Relative light output	100		15		45 to 50	<10		20		20		25		165		70		40
-	_______________________________________________________________________________________________________________________________________________________________________________
-	
-	Note from catalog: Spectral response range of most 2" phototubes is 300 to 650 nm. Two types, the R6041-406 and -506 have spectral ranges of 160 to 650 nm. (see table starting p. 22)
-	Hamamatsu catalog p. 73 shows peak around 410-420 nm, dropping to 0 around 310 nm and 510 nm (maybe Gaussian?, mean ~410nm, FWHM ~110nm). There is a similar graph and table on p. 15
-	of the same catalog. The formula from this information is contained in note (1) below:
-	(3) test function for scNaI[i]: scNaI[i] = exp(-2*(wlenNM[i]-410.0)*(wlenNM[i]-410.0)/(110.0*110.0));
-	
-	*/
-	// constants for scintillation properties
-	const G4double scintYieldNaI = 40000./MeV;// see above table
-	const G4double stcNaI = 230.*ns;// see above table
-	// From Hamamatsu Catalog (values in microns:)
-	const G4double meanWlenNaI = 0.410;
-	const G4double FWHMNaI = 0.110;
 	// for loop for defining material properties
 	for(size_t i = 0; i<nI; i++){
-		// Set wavlengths from 0.900 micron to 0.200 micron in steps of 0.005micron (when nI = 141)
+		// Set wavlengths from 0.900 micron to 0.200 micron in steps of 0.005 micron (when nI = 141)
 		wlenMUM[i] = wlenMax-i*wlenDelta;
 		energy[i] = HCMUM/wlenMUM[i];
-		/************************************************************************************************************/
-		/* Reference for dispersion formula shown below: https://refractiveindex.info/?shelf=main&book=NaI&page=Li  */
-		/* dispersion formula as function of wavelength: n^2−1=0.478+1.532*λ^2/(λ^2−0.170^2)+4.27*λ^2/(λ^2−86.21^2) */
-		/* See also J. Phys. Chem. Ref. Data 5, 329-528 (1976) at https://aip.scitation.org/doi/10.1063/1.555536    */
-		/************************************************************************************************************/
+		// see ref(3) for source of refractive index formula
 		rindexNaI[i] = sqrt(a0NaI+a1NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b1NaI*b1NaI)+a2NaI*wlenMUM[i]*wlenMUM[i]/(wlenMUM[i]*wlenMUM[i]-b2NaI*b2NaI));
-		absLengthNaI[i] = 2.59*cm;// see above table
+		absLengthNaI[i] = 2.59*cm;// see ref(1) & (2)
 		scNaI[i] = exp(-2*(wlenMUM[i]-meanWlenNaI)*(wlenMUM[i]-meanWlenNaI)/(FWHMNaI*FWHMNaI));
-		rindexWorld[i] = 1.;
-		//absLengthAl[i] = 10.*cm;// search literature. find believable values
-		reflectivity[i] = 1.;// search literature. find believable values
+		rindexAir[i] = 1.;
+		reflAl[i] = 0.95;// TODO: search literature & find believable values
 		// Debug message - disable to reduce run time
 		//G4cout << "wavelength (microns:) " << wlenMUM[i] << "; energy (eV:) " << energy[i]*1E06 << "; refractive index: " << rindexNaI[i] << G4endl;
 	}
 	// define materials starting with air
-	wMat = nist->FindOrBuildMaterial("G4_AIR");
-	// to do: define aluminum from Nist Manager
-	Al = nist->FindOrBuildElement("Al");
-	aluminium = new G4Material("aluminium", rhoAl, 1);
-	aluminium->AddElement(Al, 1);
-	// to do: define NaI from Nist Manager
+	air = nist->FindOrBuildMaterial("G4_AIR");
+	aluminium = nist->FindOrBuildMaterial("G4_Al");
+	// TODO: define NaI from Nist Manager
 	NaI = new G4Material("NaI", rhoNaI, 2);
 	Na = nist->FindOrBuildElement("Na");
 	I = nist->FindOrBuildElement("I");
@@ -157,8 +89,7 @@ void NaIDetectorConstruction::DefineMaterials()
 	NaI->AddElement(I, 1);
 	// set aluminum properties
 	mptAl = new G4MaterialPropertiesTable();
-	//mptAl->AddProperty("ABSLENGTH", energy, absLengthAl, nI);
-	mptAl->AddProperty("REFLECTIVITY", energy, reflectivity, nI);
+	mptAl->AddProperty("REFLECTIVITY", energy, reflAl, nI);
 	aluminium->SetMaterialPropertiesTable(mptAl);
 	// set NaI properties
 	mptNaI = new G4MaterialPropertiesTable();
@@ -172,8 +103,8 @@ void NaIDetectorConstruction::DefineMaterials()
 	NaI->SetMaterialPropertiesTable(mptNaI);
 	// set air properties
 	mptWorld = new G4MaterialPropertiesTable();
-	mptWorld->AddProperty("RINDEX", energy, rindexWorld, nI);
-	wMat->SetMaterialPropertiesTable(mptWorld);
+	mptWorld->AddProperty("RINDEX", energy, rindexAir, nI);
+	air->SetMaterialPropertiesTable(mptWorld);
 	// optical surface properties
 	mirrorSurface = new G4OpticalSurface("mirrorSurface");
 	mirrorSurface->SetType(dielectric_metal);
@@ -251,7 +182,7 @@ void NaIDetectorConstruction::ConstructSensDet()
 	G4double z4=AlThick+barrelHeight+flangeThick+sensDetHalfThick;
 	// Define solid, logical and physical volumes
 	solidDetector = new G4Tubs("solidDetector", r0, ir1, sensDetHalfThick, phi0, phi1);
-	logicDetector = new G4LogicalVolume(solidDetector, wMat, "logicDetector");
+	logicDetector = new G4LogicalVolume(solidDetector, air, "logicDetector");
 	physDetector = new G4PVPlacement(0, G4ThreeVector(0.,0.,z4), logicDetector, "physDetector", logicWorld, false, 0, true);
 }
 // Detector Construction Method
@@ -259,7 +190,7 @@ G4VPhysicalVolume* NaIDetectorConstruction::Construct()
 {	
 	// define solid, logical and physical mother volumes
 	wBox = new G4Box("wBox", xWorld, yWorld, zWorld);
-	logicWorld =  new G4LogicalVolume(wBox, wMat, "logicWorld");
+	logicWorld =  new G4LogicalVolume(wBox, air, "logicWorld");
 	physWorld = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.), logicWorld, "physWorld", 0, false, 0, true);
 	// Construct daughter volumes
 	ConstructHousing();

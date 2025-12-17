@@ -1,9 +1,9 @@
 /run/verbose 2
 /control/execute vis.mac
 /control/verbose 2
-/vis/open OGL 600x600-0+0
+/vis/open OGL 800x600
 /vis/sceneHandler/create OGL
-/vis/viewer/create ! ! 600x600-0+0
+/vis/viewer/create ! ! 800x600
 /vis/viewer/refresh
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
@@ -32,3 +32,9 @@
 /vis/viewer/set/autoRefresh true
 /vis/viewer/refresh
 /vis/verbose warnings
+/run/beamOn 1
+/analysis/h1/getVector
+/analysis/h2/getVector
+/run/beamOn 1
+/analysis/h1/getVector
+/analysis/h2/getVector

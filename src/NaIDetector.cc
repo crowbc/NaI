@@ -12,6 +12,7 @@ G4bool NaISensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *R0hi
 {
 	G4Track *track = aStep->GetTrack();
 	G4String pName = track->GetDefinition()->GetParticleName();
+	//G4cout << "Particle: " << pName << G4endl;
 	G4int pID = ParticleNameToIDNumber(pName);
 	if(pID==100){
 		// only stop and kill optical photons

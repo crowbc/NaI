@@ -6,8 +6,8 @@
 /gun/particle ion
 /gun/ion 27 60 0 0
 # set momentum to 0, directed in toward detector
-/gun/direction -1 0 0
+/gun/direction 0 0 1
 /gun/momentumAmp 0
-/gun/position 6.7675 0 1 cm
+/gun/position 0 0 0 cm
 
 /run/beamOn 10000000

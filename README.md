@@ -3,6 +3,8 @@ Notes on NaI simulation:
 
 Sodium iodide detector simulation for Geant4 v 11.1.0
 
+The minimum build for CMake this simulation requires is 3.16
+
 Current build will generate energy spectrum from depositions in scoring volume.
 
 Note: Current build will simulate scintillation photons, but number of hits seems to be far less than what the scoring volume energy spectrum indicates should be present.
@@ -14,7 +16,7 @@ Thread outputs can be merged by typing:
 
 	hadd nameOfMergedFile.root NaIoutput$RunNumber$_t{0..n}.root
 	
-, where n one less than the number of threads used to run the batch (max thread index)
+, where n is one less than the number of threads used to run the batch (max thread index)
 
 for merging all threads into a single Root file for a particular run number. Alternatively, typing:
 

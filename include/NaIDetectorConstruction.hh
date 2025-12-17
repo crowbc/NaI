@@ -69,8 +69,8 @@ private:
 	G4OpticalSurface *mirrorSurface;
 	G4LogicalSkinSurface *skinBarrel, *skinBottom;
 	// Declare materials and properties tables
-	G4Material *wMat, *aluminium, *NaI;
-	G4Element *Al, *Na, *I;
+	G4Material *air, *aluminium, *NaI;
+	G4Element *Na, *I;
 	G4MaterialPropertiesTable *mptAl, *mptNaI, *mptWorld, *mptMirror;
 	// Declare variables used in constructor and in defining volumes	
 	G4double xWorld, yWorld, zWorld, phi0, phi1, r0, r1, ir1, AlThick, barrelHeight, flangeThick, rOuter, sensDetHalfThick;
@@ -82,10 +82,22 @@ private:
 	const G4double HCNM = 1239.841939*eV;
 	// specified densities
 	const G4double rhoAl = 2.710*g/cm3;
-	//const G4double aAl=26.9815*g/mole;
-	//const G4double macAl=0.02232*cm2/g;
 	const G4double rhoNaI = 3.67*g/cm3;
-	//const G4double mmNaI=149.89*g/mole;
+	// constants for dispersion coefficients and factors
+	const G4double a0NaI = 1.478;
+	const G4double a1NaI = 1.532;
+	const G4double b1NaI = 0.170;
+	const G4double a2NaI = 4.27;
+	const G4double b2NaI = 86.21;
+	// constants for NaI scintillation properties
+	const G4double scintYieldNaI = 40000./MeV;// see ref (1)
+	const G4double stcNaI = 230.*ns;// see ref(1) & ref(2)
+	// From Hamamatsu Catalog (values in microns:)
+	const G4double meanWlenNaI = 0.410;
+	const G4double FWHMNaI = 0.110;
+	// constants for wavelength calculations (wavelengths given in microns)
+	const G4double wlenMax = 0.9000;
+	const G4double wlenMin = 0.2000;
 	// Declare Messenger for setting parameters	
 	G4GenericMessenger *fMessenger;
 	// Declare scoring volume

@@ -23,7 +23,8 @@ NaIRunAction::NaIRunAction()
 	man->FinishNtuple(1);
 	
 	man->CreateNtuple("Scoring", "Scoring");
-	man->CreateNtupleDColumn("fEdep");
+	man->CreateNtupleIColumn("fEvent");// col 0
+	man->CreateNtupleDColumn("fEdep");// col 1
 	man->FinishNtuple(2);
 }
 

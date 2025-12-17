@@ -1,0 +1,18 @@
+Table of Scintillator Properties in Hamamatsu catalog:
+_______________________________________________________________________________________________________________________________________________________________________________
+Table 1: Summary of scintillator characteristics
+_______________________________________________________________________________________________________________________________________________________________________________
+			NaI(Tl)		BGO		CsI(Tl)		Pure CsI	BaF2		GSO: Ce		Plastic		LaBr3: Ce	LSO: Ce		YAP: Ce
+Density (g/cm3)		3.67		7.13		4.51		4.51		4.88		6.71		1.03		5.29		7.35		5.55
+L_rad (cm)		2.59		1.12		1.85		1.85		2.10		1.38		40		2.1		0.88		2.70
+Refractive index	1.85		2.15		1.80		1.80		1.58		1.85		1.58		1.9		1.82		1.97
+Hygroscopic		Yes		No		Slightly	Slightly	Slightly	No		No		Yes		No		No
+Luminescence (nm)	410		480		530		310		220 / 325	430		400		380		420		380
+Decay time (ns)		230		300		1000		10		0.9 / 630	30		2.0		16		40		30
+Relative light output	100		15		45 to 50	<10		20		20		25		165		70		40
+_______________________________________________________________________________________________________________________________________________________________________________
+
+Note from catalog: Spectral response range of most 2" phototubes is 300 to 650 nm. Two types, the R6041-406 and -506 have spectral ranges of 160 to 650 nm. (see table starting p. 22)
+Hamamatsu catalog p. 73 shows peak around 410-420 nm, dropping to 0 around 310 nm and 510 nm (maybe Gaussian?, mean ~410nm, FWHM ~110nm). There is a similar graph and table on p. 15
+of the same catalog. The formula from this information is contained in note (1) below:
+(3) test function for scNaI[i]: scNaI[i] = exp(-2*(wlenNM[i]-410.0)*(wlenNM[i]-410.0)/(110.0*110.0));

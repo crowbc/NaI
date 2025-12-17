@@ -14,7 +14,7 @@ public:
 	~NaISteppingAction();
 	
 	virtual void UserSteppingAction(const G4Step*);
-	
+	virtual G4int ParticleNameToIDNumber(G4String name);
 private:
 	NaIEventAction *fEventAction;
 };

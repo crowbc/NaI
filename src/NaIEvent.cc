@@ -16,9 +16,9 @@ void NaIEventAction::BeginOfEventAction(const G4Event* anEvent)
 void NaIEventAction::EndOfEventAction(const G4Event* anEvent)
 {
 	//G4cout << "Energy deposition: " << fEdep << " MeV" << G4endl;
-	
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
-	
-	man->FillNtupleDColumn(2, 0, fEdep);
+	fEvent = anEvent->GetEventID();
+	man->FillNtupleIColumn(2, 0, fEvent);
+	man->FillNtupleDColumn(2, 1, fEdep);
 	man->AddNtupleRow(2);
 }
